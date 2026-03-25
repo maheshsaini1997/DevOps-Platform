@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  labels:
+    app: user-service
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: user-service
+
+  template:
+    metadata:
+      labels:
+        app: user-service
+
+    spec:
+      containers:
+      - name: user-service
+        image: 384511757320.dkr.ecr.us-east-1.amazonaws.com/dev-user-service:v1
+        imagePullPolicy: Always
+
+        ports:
+        - containerPort: 5000
+
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+
+        readinessProbe:
+          httpGet:
+          path: /health
+          port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
