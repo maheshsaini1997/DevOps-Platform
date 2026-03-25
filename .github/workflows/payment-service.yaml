@@ -1,14 +1,14 @@
-name: User Service CI
+name: Payment Service CI
 
 on:
     push:
         branches: [ "main" ]
         paths:
-            - 'application-microservices/user-service/**'
+            - 'application-microservices/payment-service/**'
     pull_request:
         branches: [ "main" ]
         paths:
-            - 'application-microservices/user-service/**'
+            - 'application-microservices/payment-service/**'
 
 jobs:
     build:
@@ -23,14 +23,14 @@ jobs:
         
         - name: Build Docker image
           run: |
-            cd application-microservices/user-service
-            docker build -t user-service:${{ env.IMAGE_TAG }} .
+            cd application-microservices/payment-service
+            docker build -t payment-service:${{ env.IMAGE_TAG }} .
         
         - name: Print image info (simulation of push)
           run: |
-            echo "Build image: user-service:${{ env.IMAGE_TAG }}"
+            echo "Build image: payment-service:${{ env.IMAGE_TAG }}"
 
         - name: Print image info (only on main)
             if github.ref == 'refs/heads/main'
           run: |
-            echo "Ready to push: user-service:${{ env.IMAGE_TAG }}"
+            echo "Ready to push: payment-service:${{ env.IMAGE_TAG }}"
