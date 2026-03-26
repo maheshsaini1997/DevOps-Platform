@@ -1,6 +1,5 @@
 from flask import Flask
 import requests
-#simple user service that calls payment service to demonstrate inter-service communication in a microservices architectures
 app = Flask(__name__)
 
 @app.route("/")
