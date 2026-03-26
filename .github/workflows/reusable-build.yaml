@@ -30,7 +30,9 @@ jobs:
       - name: Get AWS Account ID
         id: aws-account
         run: |
-          echo "ACCOUNT_ID=${aws sts get-caller-identity --query Account --output text}" >> $GITHUB_ENV
+          echo "ACCOUNT_ID=$(
+          aws sts get-caller-identity --query Account --output text
+          )" >> $GITHUB_ENV
 
       - name: Set ECR Repo URL
         run: |
