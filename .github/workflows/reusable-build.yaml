@@ -26,11 +26,20 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+      
+      - name: Get AWS Account ID
+        id: aws-account
+        run: |
+          echo "ACCOUNT_ID=${aws sts get-caller-identity --query Account --output text}" >> $GITHUB_ENV
 
+      - name: Set ECR Repo URL
+        run: |
+          echo "ECR_REGISTRY=${ACCOUNT_ID }.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com" >> $GITHUB_ENV
+          echo "ECR_REPO=dev-${{ inputs.service_name }}" >> $GITHUB_ENV
       - name: Login to Amazon ECR
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | 
-          docker login --username AWS --password-stdin 384511757320.dkr.ecr.us-east-1.amazonaws.com
+          docker login --username AWS --password-stdin $ECR_REGISTRY
       
       - name: Build Docker image
         run: |
@@ -39,7 +48,7 @@ jobs:
       
       - name: Tag image for ECR
         run: |
-          docker tag ${{ inputs.service_name }}:${{ env.IMAGE_TAG }} 384511757320.dkr.ecr.us-east-1.amazonaws.com/dev-${{ inputs.service_name }}:${{ env.IMAGE_TAG }}
+          docker tag ${{ inputs.service_name }}:${{ env.IMAGE_TAG }} $ECR_REGISTRY/$ECR_REPO:${{ env.IMAGE_TAG }}
       - name: Scan Docker image for vulnerabilities
         uses: aquasecurity/trivy-action@master
         with:
@@ -49,7 +58,7 @@ jobs:
           severity: CRITICAL
       - name: Push image to ECR
         run: |
-          docker push 384511757320.dkr.ecr.us-east-1.amazonaws.com/dev-${{ inputs.service_name }}:${{ env.IMAGE_TAG }}
+          docker push $ECR_REGISTRY/$ECR_REPO:${{ env.IMAGE_TAG }}
 
       - name: Print image info
         run: |
