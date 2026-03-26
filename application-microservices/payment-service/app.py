@@ -2,7 +2,6 @@ from flask import Flask
 import requests
 
 app = Flask(__name__)
-#simple payment service that calls notification service to demonstrate inter-service communication in a microservices architectures
 @app.route("/pay")
 def pay():
     response = requests.get("http://notification-service/notify")

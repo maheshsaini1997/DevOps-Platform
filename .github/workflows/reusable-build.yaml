@@ -40,7 +40,13 @@ jobs:
       - name: Tag image for ECR
         run: |
           docker tag ${{ inputs.service_name }}:${{ env.IMAGE_TAG }} 384511757320.dkr.ecr.us-east-1.amazonaws.com/dev-${{ inputs.service_name }}:${{ env.IMAGE_TAG }}
-      
+      - name: Scan Docker image for vulnerabilities
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: ${{ inputs.service_name }}:${{ env.IMAGE_TAG }}
+          format: 'table'
+          exit-code: '1'
+          severity: CRITICAL
       - name: Push image to ECR
         run: |
           docker push 384511757320.dkr.ecr.us-east-1.amazonaws.com/dev-${{ inputs.service_name }}:${{ env.IMAGE_TAG }}
