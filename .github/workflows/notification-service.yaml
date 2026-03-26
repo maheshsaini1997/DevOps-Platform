@@ -16,3 +16,4 @@ jobs:
         with:
             service_name: notification-service
             service_path: application-microservices/notification-service
+        secrets: inherit

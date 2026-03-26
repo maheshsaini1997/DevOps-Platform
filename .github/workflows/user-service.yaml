@@ -16,3 +16,4 @@ jobs:
         with:
             service_name: user-service
             service_path: application-microservices/user-service
+        secrets: inherit

@@ -16,3 +16,4 @@ jobs:
         with:
             service_name: payment-service
             service_path: application-microservices/payment-service
+        secrets: inherit
