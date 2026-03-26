@@ -2,6 +2,7 @@ from flask import Flask
 import requests
 
 app = Flask(__name__)
+
 @app.route("/pay")
 def pay():
     response = requests.get("http://notification-service/notify")

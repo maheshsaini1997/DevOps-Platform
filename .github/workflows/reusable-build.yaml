@@ -41,7 +41,7 @@ jobs:
         run: |
           docker tag ${{ inputs.service_name }}:${{ env.IMAGE_TAG }} 384511757320.dkr.ecr.us-east-1.amazonaws.com/dev-${{ inputs.service_name }}:${{ env.IMAGE_TAG }}
       - name: Scan Docker image for vulnerabilities
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ inputs.service_name }}:${{ env.IMAGE_TAG }}
           format: 'table'
