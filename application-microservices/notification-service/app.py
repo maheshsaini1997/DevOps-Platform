@@ -1,7 +1,6 @@
 from flask import Flask
 
 app = Flask(__name__)
-
 @app.route("/notify")
 def notify():
     return {"notification": "sent"}

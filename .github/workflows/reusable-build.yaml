@@ -36,7 +36,7 @@ jobs:
 
       - name: Set ECR Repo URL
         run: |
-          echo "ECR_REGISTRY=${ACCOUNT_ID }.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com" >> $GITHUB_ENV
+          echo "ECR_REGISTRY=${ACCOUNT_ID}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com" >> $GITHUB_ENV
           echo "ECR_REPO=dev-${{ inputs.service_name }}" >> $GITHUB_ENV
       - name: Login to Amazon ECR
         run: |
