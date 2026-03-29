@@ -9,4 +9,4 @@ spec:
   - port: 80
     targetPort: 5002
 
-  type: ClusterIP
+  type: LoadBalancer

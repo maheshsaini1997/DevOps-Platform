@@ -1,29 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata:
-  name: notification-service
-  labels:
-    app: notification-service
 
+metadata:
+  name: payment-service
+  labels:
+    app: payment-service
 spec:
   replicas: 2
 
   selector:
     matchLabels:
-      app: notification-service
+      app: payment-service
 
   template:
     metadata:
       labels:
-        app: notification-service
+        app: payment-service
     spec:
       containers:
-      - name: notification-service
-        image: 384511757320.dkr.ecr.us-east-1.amazonaws.com/dev-notification-service:v1
+      - name: payment-service
+        image: 384511757320.dkr.ecr.us-east-1.amazonaws.com/dev-payment-service:739123cbfe3160f1e80c219e032b600a8354fcd3
         imagePullPolicy: Always
-
         ports:
-        - containerPort: 5002
+        - containerPort: 5001
 
         resources:
           limits:
@@ -32,10 +31,9 @@ spec:
           requests:
             memory: "64Mi"
             cpu: "250m"
-
         readinessProbe:
           httpGet:
             path: /health
-            port: 5002
+            port: 5001
           initialDelaySeconds: 5
           periodSeconds: 10

@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: 384511757320.dkr.ecr.us-east-1.amazonaws.com/dev-user-service:v1
+        image: 384511757320.dkr.ecr.us-east-1.amazonaws.com/dev-user-service:739123cbfe3160f1e80c219e032b600a8354fcd3
         imagePullPolicy: Always
 
         ports:
@@ -36,7 +36,7 @@ spec:
 
         readinessProbe:
           httpGet:
-          path: /health
-          port: 5000
+            path: /health
+            port: 5000
           initialDelaySeconds: 5
           periodSeconds: 10
