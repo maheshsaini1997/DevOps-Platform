@@ -12,7 +12,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: /terraform-infra/environments/dev
+        working-directory: ./terraform-infra/environments/dev
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
