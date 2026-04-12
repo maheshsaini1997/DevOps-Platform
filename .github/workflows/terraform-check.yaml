@@ -2,7 +2,7 @@ name: terraform-check
 
 on:
   push:
-    path:
+    paths:
     - 'terraform-infra/**'
 
 jobs:
