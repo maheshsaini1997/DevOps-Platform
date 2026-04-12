@@ -6,7 +6,7 @@ metadata:
     app: user-service
 
 spec:
-  replicas: 2
+  replicas: {{ .Values.replicaCount }}
 
   selector:
     matchLabels:
@@ -20,8 +20,8 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: 384511757320.dkr.ecr.us-east-1.amazonaws.com/dev-user-service:739123cbfe3160f1e80c219e032b600a8354fcd3
-        imagePullPolicy: Always
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
 
         ports:
         - containerPort: 5000
