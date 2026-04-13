@@ -5,7 +5,7 @@ image:
 
   pullPolicy: Always
 
-  tag: latest
+  tag: 0454243cbd5e36125fa3f9966fa53080e8617e22
 
 # This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
