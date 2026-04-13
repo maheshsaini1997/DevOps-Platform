@@ -17,7 +17,7 @@ WHAT THIS PROJECT DOES
 --------------------------------------------------
 
 ARCHITECTURE OVERVIEW
-
+```
 Developer -> GitHub -> GitHub Actions (CI)
                       ↓
               Docker Image -> AWS ECR
@@ -32,10 +32,12 @@ Developer -> GitHub -> GitHub Actions (CI)
                       ↓
         Prometheus -> Grafana (Monitoring)
 
+```
+
 --------------------------------------------------
 
 TECH STACK
-
+```
 Cloud: AWS (EKS, ECR, IAM, VPC)
 IaC: Terraform
 CI: GitHub Actions
@@ -44,11 +46,12 @@ Containerization: Docker
 Orchestration: Kubernetes (EKS)
 Package Management: Helm
 Monitoring: Prometheus, Grafana
-
+```
 --------------------------------------------------
 
-PROJECT STRUCTURE
+## 📁 Project Structure
 
+```
 DevOps-Platform/
 │
 ├── terraform-infra/
@@ -70,11 +73,13 @@ DevOps-Platform/
 │       ├── values.yaml
 │       └── values-dev.yaml
 │
-├── .github/workflows/
-│   ├── reusable-build.yaml
-│   ├── user-service.yaml
-│   ├── terraform-plan.yaml
-│   └── terraform-apply.yaml
+├── .github/
+│   └── workflows/
+│       ├── reusable-build.yaml
+│       ├── user-service.yaml
+│       ├── terraform-plan.yaml
+│       └── terraform-apply.yaml
+```
 
 --------------------------------------------------
 
