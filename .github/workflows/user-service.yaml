@@ -1,5 +1,6 @@
 name: User Service CI
 
+
 on:
     push:
         branches: [ "main" ]
@@ -9,6 +10,9 @@ on:
         branches: [ "main" ]
         paths:
             - 'application-microservices/user-service/**'
+
+permissions:
+  contents: write
 
 jobs:
     build:
