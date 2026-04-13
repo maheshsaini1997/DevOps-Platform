@@ -6,7 +6,7 @@ on:
 jobs:
   terraform-apply:
     runs-on: ubuntu-latest
-
+    environment: dev
     defaults:
       run:
         working-directory: ./terraform-infra/environments/dev
