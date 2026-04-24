@@ -1,0 +1,38 @@
+name: CI Pipeline
+
+on:
+  push:
+    paths:
+     - 'application-microservices/**'
+
+jobs:
+  detect-service:
+    runs-on: ubuntu-latest
+    outputs:
+        service: ${{ steps.set.outputs.service }}
+    steps:
+      - name: actions/checkout@v4
+        uses: actions/checkout@v4
+
+      - name: Detect changed service
+        id: set
+        run: |
+          SERVICES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
+            | grep 'application-microservices/' \
+            | cut -d'/' -f2 \
+            | sort -u \
+            | jq -R -s -c 'split("\n")[:-1]')
+
+          echo "services=$SERVICES" >> $GITHUB_OUTPUT
+        
+  build-and-push:
+    needs: detect-service
+    strategy:
+      matrix:
+        service: ${{ fromJson(needs.detect-service.outputs.service) }}
+    uses: ./.github/workflows/reusable-build.yaml
+    with:
+      service_name: ${{ needs.detect-service.outputs.service }}
+      service_path: application-microservices/${{ needs.detect-service.outputs.service }}
+    
+    

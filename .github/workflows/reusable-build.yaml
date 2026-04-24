@@ -66,14 +66,14 @@ jobs:
 
       - name: Update Helm value files
         run: |
-          sed -i "s/tag: .*/tag: ${{ env.IMAGE_TAG }}/" ./helm/user-service/values-dev.yaml
+          sed -i "s/tag: .*/tag: ${{ env.IMAGE_TAG }}/" ./helm/${{ inputs.service_name }}/values-dev.yaml
       
       - name: Commit and push changes
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@gmail.com"
-          git add ./helm/user-service/values-dev.yaml
-          git commit -m "Update image tag to ${{ env.IMAGE_TAG }}"
+          git add ./helm/${{ inputs.service_name }}/values-dev.yaml
+          git commit -m "Update image tag to ${{ env.IMAGE_TAG }}" || echo "No changes"
           git push
 
       - name: Print image info
