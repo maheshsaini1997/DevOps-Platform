@@ -1,10 +1,10 @@
 provider "aws" {
   region = "us-east-1"
 }
-
+data "aws_caller_identity" "current" {}
 # ================= S3 Bucket =================
 resource "aws_s3_bucket" "tf_state" {
-  bucket = "mahesh-terraform-state"
+  bucket = "mahesh-terraform-state-${data.aws_caller_identity.current.account_id}"
 
   lifecycle {
     prevent_destroy = true
