@@ -23,7 +23,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: terraform-infra/environments/dev
+        working-directory: infra/environments/dev
 
     steps:
       - name: Checkout
@@ -67,7 +67,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: terraform-infra/environments/test
+        working-directory: infra/environments/test
 
     steps:
       - uses: actions/checkout@v4
