@@ -5,6 +5,10 @@ permissions:
 on:
   workflow_call:
     inputs:
+      environment:
+        required: true
+        type: string
+
       service_name:
         required: true
         type: string
@@ -39,7 +43,7 @@ jobs:
       - name: Set ECR Repo URL
         run: |
           echo "ECR_REGISTRY=${ACCOUNT_ID}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com" >> $GITHUB_ENV
-          echo "ECR_REPO=dev-${{ inputs.service_name }}" >> $GITHUB_ENV
+          echo "ECR_REPO=${{ inputs.environment }}-${{ inputs.service_name }}" >> $GITHUB_ENV
       - name: Login to Amazon ECR
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | 
@@ -60,21 +64,11 @@ jobs:
           format: 'table'
           exit-code: '1'
           severity: CRITICAL
+
       - name: Push image to ECR
         run: |
           docker push $ECR_REGISTRY/$ECR_REPO:${{ env.IMAGE_TAG }}
 
-      - name: Update Helm value files
-        run: |
-          sed -i "s/tag: .*/tag: ${{ env.IMAGE_TAG }}/" ./helm/${{ inputs.service_name }}/values-dev.yaml
-      
-      - name: Commit and push changes
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@gmail.com"
-          git add ./helm/${{ inputs.service_name }}/values-dev.yaml
-          git commit -m "Update image tag to ${{ env.IMAGE_TAG }}" || echo "No changes"
-          git push
 
       - name: Print image info
         run: |

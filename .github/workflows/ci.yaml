@@ -3,36 +3,59 @@ name: CI Pipeline
 on:
   push:
     paths:
-     - 'application-microservices/**'
+      - 'application-microservices/**'
+  workflow_run:
+    workflows: ["Terraform Pipeline"]
+    types:
+      - completed
+
+permissions:
+  contents: write
 
 jobs:
-  detect-service:
-    runs-on: ubuntu-latest
-    outputs:
-        service: ${{ steps.set.outputs.service }}
-    steps:
-      - name: actions/checkout@v4
-        uses: actions/checkout@v4
 
-      - name: Detect changed service
+  detect-service:
+    if: |
+      github.event_name == 'push' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+
+    outputs:
+      services: ${{ steps.set.outputs.services }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect changed services
         id: set
         run: |
-          SERVICES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
+          if [ "${{ github.event_name }}" == "push" ]; then
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          else
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+          fi
+
+          SERVICES=$(echo "$CHANGED_FILES" \
             | grep 'application-microservices/' \
             | cut -d'/' -f2 \
             | sort -u \
             | jq -R -s -c 'split("\n")[:-1]')
 
           echo "services=$SERVICES" >> $GITHUB_OUTPUT
-        
+
   build-and-push:
-    needs: detect-service
+    if: |
+      (github.event_name == 'push' ||
+      github.event.workflow_run.conclusion == 'success') &&
+      needs.detect-service.outputs.services != '[]'
+
     strategy:
       matrix:
-        service: ${{ fromJson(needs.detect-service.outputs.service) }}
+        service: ${{ fromJson(needs.detect-service.outputs.services) }}
+
     uses: ./.github/workflows/reusable-build.yaml
+
     with:
-      service_name: ${{ needs.detect-service.outputs.service }}
-      service_path: application-microservices/${{ needs.detect-service.outputs.service }}
-    
-    
+      service_name: ${{ matrix.service }}
+      service_path: application-microservices/${{ matrix.service }}
+      environment: dev

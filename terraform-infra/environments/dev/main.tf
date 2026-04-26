@@ -57,11 +57,10 @@ data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_name
 }
 resource "kubernetes_namespace" "argocd" {
-
-  depends_on = [module.eks]
   metadata {
     name = "argocd"
   }
+  depends_on = [module.eks]
 }
 
 resource "helm_release" "argocd" {
