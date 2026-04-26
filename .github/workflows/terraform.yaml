@@ -3,13 +3,13 @@ name: Terraform Pipeline
 on:
   pull_request:
     paths:
-      - 'terraform-infra/**'
+      - 'infra/**'
 
   push:
     branches:
       - main
     paths:
-      - 'terraform-infra/**'
+      - 'infra/**'
 
 jobs:
 
