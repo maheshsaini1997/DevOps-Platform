@@ -1,203 +1,362 @@
-# DevOps Platform (GitOps + EKS + Terraform)
+# DevOps Platform
 
-This project demonstrates a complete DevOps platform that automates infrastructure provisioning, application deployment, and monitoring using modern best practices.
+This repository is a hands-on DevOps platform built around a simple but realistic goal: take application code, build it into containers, publish those containers to AWS, and let GitOps deploy the right version into Kubernetes.
 
-The focus is not just on deploying an application, but on building a production-like system with GitOps, CI/CD automation, and full observability.
+It is not just a demo app. The repo brings together infrastructure, CI, Helm packaging, Argo CD, image automation, and monitoring so the deployment flow feels close to how a real platform team would run it.
 
---------------------------------------------------
+## What This Platform Does
 
-WHAT THIS PROJECT DOES
+- Provisions AWS infrastructure with Terraform.
+- Creates a VPC, private/public subnets, EKS, node groups, and ECR repositories.
+- Builds microservice Docker images with GitHub Actions.
+- Pushes images to Amazon ECR using commit SHAs as image tags.
+- Packages Kubernetes workloads with Helm charts.
+- Uses Argo CD as the GitOps controller.
+- Uses Argo CD Image Updater to track and update image versions.
+- Installs monitoring with Prometheus and Grafana through Argo CD applications.
 
-- Provisions AWS infrastructure using Terraform
-- Builds and pushes Docker images via GitHub Actions
-- Deploys applications to EKS using Helm and ArgoCD (GitOps)
-- Automatically updates deployments on code changes
-- Monitors infrastructure and applications using Prometheus and Grafana
+## Architecture
 
---------------------------------------------------
-
-ARCHITECTURE OVERVIEW
+```text
+                                      +----------------------+
+                                      |      Developer       |
+                                      +----------+-----------+
+                                                 |
+                                                 | push code / infra changes
+                                                 v
+                                      +----------------------+
+                                      |   GitHub Repository  |
+                                      | app code, Helm, IaC  |
+                                      +----+------------+----+
+                                           |            |
+                    application changes    |            | infrastructure changes
+                                           |            |
+                                           v            v
+                              +------------------+   +------------------+
+                              | GitHub Actions   |   | Terraform        |
+                              | CI Pipeline      |   | IaC Pipeline     |
+                              +--------+---------+   +--------+---------+
+                                       |                      |
+                                       | build, scan, push    | provision / update
+                                       v                      v
+                              +------------------+   +------------------+
+                              | Amazon ECR       |   | AWS Foundation   |
+                              | container images |   | VPC, EKS, ECR    |
+                              +--------+---------+   +--------+---------+
+                                       |                      |
+                                       | image versions       | cluster runtime
+                                       v                      v
++----------------------+      +------------------+   +------------------+
+| Argo CD Image        |----->| GitOps Manifests |-->| Amazon EKS       |
+| Updater              |      | Helm + Argo Apps |   | Kubernetes       |
++----------------------+      +--------+---------+   +--------+---------+
+                                       ^                      |
+                                       | sync desired state   | workloads
+                              +--------+---------+            v
+                              | Argo CD          |   +------------------+
+                              | GitOps Controller|   | Microservices    |
+                              +------------------+   | user/payment/    |
+                                                     | notification     |
+                                                     +--------+---------+
+                                                              |
+                                                              | metrics / health
+                                                              v
+                                                     +------------------+
+                                                     | Observability    |
+                                                     | Prometheus +     |
+                                                     | Grafana          |
+                                                     +------------------+
 ```
-Developer -> GitHub -> GitHub Actions (CI)
-                      ↓
-              Docker Image -> AWS ECR
-                      ↓
-          Helm values updated (commit SHA)
-                      ↓
-                  Git updated
-                      ↓
-              ArgoCD (GitOps)
-                      ↓
-              Kubernetes (EKS)
-                      ↓
-        Prometheus -> Grafana (Monitoring)
 
-```
+The platform is split into clear responsibilities:
 
---------------------------------------------------
+- Source control keeps application code, Helm charts, Terraform, and Argo CD manifests together.
+- CI builds changed microservices, scans the images, and publishes versioned artifacts to ECR.
+- Terraform owns the AWS foundation: VPC, EKS, node groups, and container registries.
+- Argo CD owns Kubernetes deployment by syncing Helm-based applications from Git.
+- Argo CD Image Updater bridges ECR and GitOps by tracking new image versions.
+- Prometheus and Grafana provide the observability layer for the cluster and workloads.
 
-TECH STACK
-```
-Cloud: AWS (EKS, ECR, IAM, VPC)
-IaC: Terraform
-CI: GitHub Actions
-CD: ArgoCD (GitOps)
-Containerization: Docker
-Orchestration: Kubernetes (EKS)
-Package Management: Helm
-Monitoring: Prometheus, Grafana
-```
---------------------------------------------------
+The rule of the platform is simple: CI creates artifacts, Git stores desired state, and Argo CD keeps Kubernetes aligned with Git.
 
-## 📁 Project Structure
+## Tech Stack
 
-```
+| Area | Tools |
+| --- | --- |
+| Cloud | AWS |
+| Infrastructure | Terraform |
+| Kubernetes | Amazon EKS |
+| Container Registry | Amazon ECR |
+| CI | GitHub Actions |
+| CD / GitOps | Argo CD |
+| Packaging | Helm |
+| Image automation | Argo CD Image Updater |
+| Security scan | Trivy |
+| Monitoring | Prometheus, Grafana |
+
+## Repository Layout
+
+```text
 DevOps-Platform/
-│
-├── terraform-infra/
-│   ├── environments/
-│   │   └── dev/
-│   └── modules/
-│       ├── vpc/
-│       ├── eks/
-│       └── ecr/
-│
-├── application-microservices/
-│   └── user-service/
-│       ├── Dockerfile
-│       └── application code
-│
-├── helm/
-│   └── user-service/
-│       ├── templates/
-│       ├── values.yaml
-│       └── values-dev.yaml
-│
-├── .github/
-│   └── workflows/
-│       ├── reusable-build.yaml
-│       ├── user-service.yaml
-│       ├── terraform-plan.yaml
-│       └── terraform-apply.yaml
+|-- application-microservices/
+|   |-- user-service/
+|   |-- payment-service/
+|   `-- notification-service/
+|
+|-- helm/
+|   |-- user-service/
+|   |-- payment-service/
+|   `-- notification-service/
+|
+|-- infra/
+|   `-- terraform/
+|       |-- bootstrap/
+|       |-- environments/
+|       |   |-- dev/
+|       |   |-- test/
+|       |   |-- uat/
+|       |   `-- prod/
+|       `-- modules/
+|           |-- vpc/
+|           |-- eks/
+|           `-- ecr/
+|
+|-- platform/
+|   `-- argocd/
+|       `-- applications/
+|           `-- dev/
+|               |-- root-app.yaml
+|               |-- user-service-dev.yaml
+|               |-- image-updater.yaml
+|               `-- monitoring/
+|                   |-- prometheus-app.yaml
+|                   `-- grafana.yaml
+|
+|-- k8s-manifests/
+|-- platform-addons/
+`-- .github/workflows/
+    |-- ci.yaml
+    |-- reusable-build.yaml
+    `-- terraform.yaml
 ```
 
---------------------------------------------------
+## Application Services
 
-CI/CD FLOW
+The repo currently contains three Python-based microservices:
 
-CI (GitHub Actions)
-- Triggered on code changes
-- Builds Docker image
-- Tags image using commit SHA
-- Pushes image to ECR
-- Updates values-dev.yaml with new image tag
-- Pushes change back to repo
+- `user-service`
+- `payment-service`
+- `notification-service`
 
-CD (ArgoCD - GitOps)
-- Watches Git repository
-- Detects changes in Helm values
-- Automatically syncs and deploys to EKS
-- No manual kubectl apply
+Each service has its own `Dockerfile` and application code under `application-microservices/`.
 
---------------------------------------------------
+Helm charts exist for the services under `helm/`. The `user-service` is currently wired into Argo CD for the dev environment through:
 
-HELM CONFIGURATION
+```text
+platform/argocd/applications/dev/user-service-dev.yaml
+```
 
-image:
-  registry: <aws-account-id>.dkr.ecr.us-east-1.amazonaws.com
-  repository: dev-user-service
-  tag: latest
+The payment and notification services have chart structure in place and can be connected to Argo CD in the same pattern.
 
-The pipeline replaces tag dynamically with commit SHA.
+## Infrastructure
 
---------------------------------------------------
+Terraform code lives under:
 
-WHY NOT USE LATEST TAG?
+```text
+infra/terraform/
+```
 
-- Not versioned
-- Hard to debug
-- No rollback control
+The bootstrap layer creates the remote state foundation:
 
-Instead:
-dev-user-service:<commit-sha>
+- S3 bucket for Terraform state
+- DynamoDB table for state locking
 
---------------------------------------------------
+The dev environment currently provisions:
 
-TERRAFORM SETUP
+- VPC
+- Public and private subnets
+- Internet Gateway
+- NAT Gateway
+- EKS cluster
+- EKS managed node group
+- ECR repositories for the services
 
-- Remote state stored in S3
-- State locking using DynamoDB
+The EKS cluster name is built as:
 
-Pipelines:
-- terraform plan -> automatic
-- terraform apply -> manual approval
+```text
+dev-platform
+```
 
---------------------------------------------------
+## CI Flow
 
-OBSERVABILITY
+The CI workflow is defined in:
 
-Installed using kube-prometheus-stack
+```text
+.github/workflows/ci.yaml
+.github/workflows/reusable-build.yaml
+```
 
-Includes:
+When files under `application-microservices/` change, the pipeline:
+
+1. Detects which service changed.
+2. Builds only the changed service image.
+3. Tags the image with the Git commit SHA.
+4. Scans the image with Trivy.
+5. Pushes the image to Amazon ECR.
+
+Using commit SHAs makes deployments traceable. If something breaks, it is easy to see exactly which source revision produced the running image.
+
+## GitOps Flow
+
+Argo CD application manifests live in:
+
+```text
+platform/argocd/applications/dev/
+```
+
+The main app-of-apps entry point is:
+
+```text
+platform/argocd/applications/dev/root-app.yaml
+```
+
+That root application points Argo CD at the dev application folder. From there, Argo CD manages:
+
+- `user-service`
+- `argocd-image-updater`
 - Prometheus
 - Grafana
-- Node Exporter
-- kube-state-metrics
 
-Monitors:
-- Node CPU / Memory
-- Pod usage
-- Application metrics
-- Resource consumption
+The `user-service` app deploys the Helm chart from:
 
---------------------------------------------------
+```text
+helm/user-service
+```
 
-KEY LEARNINGS
+and uses dev values from:
 
-- CI should not deploy directly
-- Git should be source of truth
-- Use parameterization instead of hardcoding
-- Observability is critical
-- Terraform should follow plan + approval
+```text
+helm/user-service/values-dev.yaml
+```
 
---------------------------------------------------
+## Image Updates
 
-HOW TO RUN
+Argo CD Image Updater is configured in:
 
-1. Provision Infrastructure
-cd terraform-infra/environments/dev
+```text
+platform/argocd/applications/dev/image-updater.yaml
+```
+
+The user service has image updater annotations in:
+
+```text
+platform/argocd/applications/dev/user-service-dev.yaml
+```
+
+Those annotations tell Image Updater which ECR image to watch and which Helm values control the image repository and tag.
+
+In the Helm chart, the important fields are:
+
+```yaml
+image:
+  registry: <aws-account-id>.dkr.ecr.<aws-region>.amazonaws.com
+  repository: dev-user-service
+  tag: <commit-sha>
+  pullPolicy: Always
+```
+
+## Monitoring
+
+Monitoring is managed through Argo CD applications:
+
+```text
+platform/argocd/applications/dev/monitoring/prometheus-app.yaml
+platform/argocd/applications/dev/monitoring/grafana.yaml
+```
+
+Prometheus is installed using `kube-prometheus-stack`, and Grafana is installed from the Grafana Helm chart.
+
+This gives the cluster a base observability layer for nodes, pods, workloads, and Kubernetes health.
+
+## Running the Platform
+
+### 1. Create Terraform Remote State
+
+```powershell
+cd infra/terraform/bootstrap
 terraform init
 terraform apply
+```
 
-2. Configure kubectl
-aws eks update-kubeconfig --region us-east-1 --name <cluster-name>
+### 2. Provision the Dev Infrastructure
 
-3. Install ArgoCD
+```powershell
+cd ../environments/dev
+terraform init
+terraform plan
+terraform apply
+```
+
+### 3. Configure kubectl
+
+```powershell
+aws eks update-kubeconfig --region us-east-1 --name dev-platform
+```
+
+### 4. Install Argo CD
+
+```powershell
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
 
-4. Install Monitoring
-helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring
+### 5. Bootstrap the Root Application
 
-5. Deploy Application
-Push code -> pipeline runs -> deployment happens automatically
+```powershell
+kubectl apply -f platform/argocd/applications/dev/root-app.yaml
+```
 
---------------------------------------------------
+After this, Argo CD takes over the application deployment flow.
 
-CLEANUP
+## Useful Commands
 
-terraform destroy
+Check Argo CD applications:
 
---------------------------------------------------
+```powershell
+kubectl -n argocd get applications
+```
 
-FINAL THOUGHTS
+Check the user service namespace:
 
-This project focuses on building a realistic DevOps workflow, not just deploying an application.
+```powershell
+kubectl -n user-service-dev get all
+```
 
-It covers:
-- Infrastructure lifecycle
-- Automated CI/CD
-- GitOps principles
-- Monitoring & observability
+Check image updater logs:
 
-Feedback is always welcome.
+```powershell
+kubectl -n argocd logs deploy/argocd-image-updater
+```
+
+Validate an Argo CD application manifest before applying:
+
+```powershell
+kubectl apply --dry-run=server -f platform/argocd/applications/dev/user-service-dev.yaml
+```
+
+## Notes
+
+- `root-app.yaml` currently lives inside the same folder it syncs. This works, but a cleaner long-term layout would keep the bootstrap root app outside the folder managed by the root app.
+- The dev environment is the most complete environment in the current repo. Test, UAT, and prod backend files exist, but their full environment definitions can be expanded as the platform matures.
+- The older `k8s-manifests/` folder is useful as raw Kubernetes reference material, while Helm is the preferred deployment path for GitOps.
+
+## Why This Project Matters
+
+The project shows the full path from code to cluster:
+
+- Infrastructure is repeatable.
+- Images are versioned.
+- Deployments are Git-driven.
+- Monitoring is part of the platform, not an afterthought.
+
+That is the real value here: the repo is not only deploying a service, it is building the foundation for a platform workflow.
