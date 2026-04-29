@@ -12,13 +12,8 @@ spec:
     targetRevision: 0.9.1
 
     helm:
-      values: ""
-      config:
-        registries:
-        - name: ECR
-          api_url: https://api.ecr.us-east-1.amazonaws.com
-          prefix: 530467655811.dkr.ecr.us-east-1.amazonaws.com
-          credentials: ext:/app/config/registries.conf
+      values: |
+        config: {}
 
   destination:
     server: https://kubernetes.default.svc
