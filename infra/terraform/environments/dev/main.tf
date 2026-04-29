@@ -24,7 +24,6 @@ module "ecr" {
     "notification-service"
   ]
 }
-
 module "eks" {
   source          = "../../modules/eks"
   environment     = "dev"
