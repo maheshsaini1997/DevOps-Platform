@@ -4,8 +4,8 @@ metadata:
   name: user-service
   namespace: argocd
 
-  annotation:
-    argocd-image-updater.argoproj.io/image-list: user-service= 530467655811.dkr.ecr.us-east-1.amazonaws.com/dev-user-service
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: user-service=530467655811.dkr.ecr.us-east-1.amazonaws.com/dev-user-service
     argocd-image-updater.argoproj.io/user-service.update-strategy: latest
 spec:
   project: default
@@ -23,3 +23,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

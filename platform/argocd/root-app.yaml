@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/maheshsaini1997/DevOps-Platform
     targetRevision: HEAD
-    path: argocd/applications
+    path: platform/argocd/applications/dev
 
   destination:
     server: https://kubernetes.default.svc
