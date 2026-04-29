@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   registry: 530467655811.dkr.ecr.us-east-1.amazonaws.com
   repository: dev-user-service
-  tag: latest
+  tag: 3d45013a3ecc53d1181cd6f90206f0e31afb1749
   pullPolicy: Always
 
 # This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/

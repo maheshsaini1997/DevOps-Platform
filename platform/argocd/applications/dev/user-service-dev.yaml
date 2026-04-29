@@ -6,7 +6,7 @@ metadata:
 
   annotations:
     argocd-image-updater.argoproj.io/image-list: user-service=530467655811.dkr.ecr.us-east-1.amazonaws.com/dev-user-service
-    argocd-image-updater.argoproj.io/user-service.update-strategy: latest
+    argocd-image-updater.argoproj.io/user-service.update-strategy: 3d45013a3ecc53d1181cd6f90206f0e31afb1749
 
     argocd-image-updater.argoproj.io/user-service.helm.image-name: image.repository
     argocd-image-updater.argoproj.io/user-service.helm.image-tag: image.tag
