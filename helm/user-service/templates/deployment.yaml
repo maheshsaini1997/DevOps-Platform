@@ -6,7 +6,9 @@ metadata:
     app: user-service
 
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
 
   selector:
     matchLabels:
@@ -24,19 +26,14 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
 
         ports:
-        - containerPort: 5000
+        - name: http
+          containerPort: {{ .Values.service.targetPort }}
+          protocol: TCP
 
         resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
-          requests:
-            memory: "64Mi"
-            cpu: "250m"
+          {{- toYaml .Values.resources | nindent 10 }}
 
+        livenessProbe:
+          {{- toYaml .Values.livenessProbe | nindent 10 }}
         readinessProbe:
-          httpGet:
-            path: /health
-            port: 5000
-          initialDelaySeconds: 5
-          periodSeconds: 10
+          {{- toYaml .Values.readinessProbe | nindent 10 }}

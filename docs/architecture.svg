@@ -1,0 +1,100 @@
+<svg width="1120" height="720" viewBox="0 0 1120 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">DevOps Platform Architecture</title>
+  <desc id="desc">Architecture diagram showing GitHub, GitHub Actions, Terraform, AWS, ECR, EKS, Argo CD, Helm workloads, Prometheus, and Grafana.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1120" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#12323F"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#020617" flood-opacity="0.28"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2 2L10 6L2 10" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .title { fill: #F8FAFC; font: 700 28px Arial, sans-serif; }
+      .subtitle { fill: #CBD5E1; font: 400 15px Arial, sans-serif; }
+      .box { fill: #FFFFFF; stroke: #D8E4EA; stroke-width: 1.2; filter: url(#shadow); }
+      .box-blue { fill: #EAF4FF; stroke: #92BFE8; }
+      .box-green { fill: #ECFDF3; stroke: #7BC9A2; }
+      .box-amber { fill: #FFF7E8; stroke: #E5B35B; }
+      .box-purple { fill: #F3EEFF; stroke: #B59BE8; }
+      .label { fill: #102033; font: 700 17px Arial, sans-serif; }
+      .small { fill: #475569; font: 400 13px Arial, sans-serif; }
+      .pill { fill: #0F766E; }
+      .pill-text { fill: #ECFEFF; font: 700 12px Arial, sans-serif; letter-spacing: .4px; }
+      .line { stroke: #94A3B8; stroke-width: 2.4; marker-end: url(#arrow); }
+      .dash { stroke: #94A3B8; stroke-width: 2.4; stroke-dasharray: 7 7; marker-end: url(#arrow); }
+      .lane { fill: rgba(255,255,255,.06); stroke: rgba(226,232,240,.18); stroke-width: 1; }
+      .lane-label { fill: #E2E8F0; font: 700 13px Arial, sans-serif; letter-spacing: .8px; }
+    </style>
+  </defs>
+
+  <rect width="1120" height="720" rx="28" fill="url(#bg)"/>
+  <text x="56" y="58" class="title">DevOps Platform</text>
+  <text x="56" y="84" class="subtitle">Commit-based CI, Terraform-provisioned AWS, and GitOps delivery into Amazon EKS.</text>
+
+  <rect x="44" y="118" width="304" height="538" rx="20" class="lane"/>
+  <rect x="408" y="118" width="304" height="538" rx="20" class="lane"/>
+  <rect x="772" y="118" width="304" height="538" rx="20" class="lane"/>
+  <text x="70" y="148" class="lane-label">SOURCE &amp; CI</text>
+  <text x="434" y="148" class="lane-label">AWS FOUNDATION</text>
+  <text x="798" y="148" class="lane-label">GITOPS RUNTIME</text>
+
+  <rect x="82" y="184" width="228" height="82" rx="14" class="box box-blue"/>
+  <text x="112" y="219" class="label">GitHub Repository</text>
+  <text x="112" y="244" class="small">app code, Helm, Terraform</text>
+
+  <rect x="82" y="338" width="228" height="82" rx="14" class="box box-blue"/>
+  <text x="112" y="373" class="label">GitHub Actions</text>
+  <text x="112" y="398" class="small">detect, build, scan, push</text>
+
+  <rect x="82" y="494" width="228" height="82" rx="14" class="box box-purple"/>
+  <text x="112" y="529" class="label">Terraform Pipeline</text>
+  <text x="112" y="554" class="small">plan and apply infra changes</text>
+
+  <rect x="446" y="184" width="228" height="82" rx="14" class="box box-green"/>
+  <text x="476" y="219" class="label">Amazon ECR</text>
+  <text x="476" y="244" class="small">commit SHA image tags</text>
+
+  <rect x="446" y="338" width="228" height="82" rx="14" class="box box-amber"/>
+  <text x="476" y="373" class="label">AWS Network</text>
+  <text x="476" y="398" class="small">VPC, subnets, NAT, IAM</text>
+
+  <rect x="446" y="494" width="228" height="82" rx="14" class="box box-green"/>
+  <text x="476" y="529" class="label">Amazon EKS</text>
+  <text x="476" y="554" class="small">managed Kubernetes cluster</text>
+
+  <rect x="810" y="184" width="228" height="82" rx="14" class="box box-purple"/>
+  <text x="840" y="219" class="label">Argo CD</text>
+  <text x="840" y="244" class="small">syncs desired state from Git</text>
+
+  <rect x="810" y="338" width="228" height="82" rx="14" class="box box-purple"/>
+  <text x="840" y="373" class="label">Image Updater</text>
+  <text x="840" y="398" class="small">tracks fresh ECR image tags</text>
+
+  <rect x="810" y="494" width="228" height="82" rx="14" class="box box-green"/>
+  <text x="840" y="529" class="label">Helm Workloads</text>
+  <text x="840" y="554" class="small">user, payment, notification</text>
+
+  <rect x="444" y="620" width="232" height="44" rx="22" class="pill"/>
+  <text x="480" y="648" class="pill-text">PROMETHEUS + GRAFANA</text>
+
+  <path d="M196 266V334" class="line"/>
+  <path d="M310 379H440" class="line"/>
+  <path d="M196 420V488" class="line"/>
+  <path d="M310 535H440" class="line"/>
+  <path d="M560 420V488" class="line"/>
+  <path d="M674 535H804" class="line"/>
+  <path d="M924 266V334" class="dash"/>
+  <path d="M924 420V488" class="line"/>
+  <path d="M810 225H680" class="dash"/>
+  <path d="M560 576V614" class="line"/>
+  <path d="M810 535H680" class="dash"/>
+
+  <text x="326" y="360" class="small">images</text>
+  <text x="326" y="516" class="small">infra</text>
+  <text x="690" y="209" class="small">desired state</text>
+  <text x="690" y="516" class="small">deploy</text>
+</svg>

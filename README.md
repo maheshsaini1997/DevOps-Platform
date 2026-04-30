@@ -1,8 +1,23 @@
 # DevOps Platform
 
+[![CI Pipeline](https://github.com/maheshsaini1997/DevOps-Platform/actions/workflows/ci.yaml/badge.svg)](https://github.com/maheshsaini1997/DevOps-Platform/actions/workflows/ci.yaml)
+[![Terraform Pipeline](https://github.com/maheshsaini1997/DevOps-Platform/actions/workflows/terraform.yaml/badge.svg)](https://github.com/maheshsaini1997/DevOps-Platform/actions/workflows/terraform.yaml)
+![Terraform](https://img.shields.io/badge/Terraform-1.x-7B42BC?logo=terraform&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-EKS%20%2B%20ECR-FF9900?logo=amazonaws&logoColor=white)
+![GitOps](https://img.shields.io/badge/GitOps-Argo%20CD-EF7B4D?logo=argo&logoColor=white)
+![License](https://img.shields.io/badge/License-TBD-lightgrey)
+
 This repository is a hands-on DevOps platform built around a simple but realistic goal: take application code, build it into containers, publish those containers to AWS, and let GitOps deploy the right version into Kubernetes.
 
 It is not just a demo app. The repo brings together infrastructure, CI, Helm packaging, Argo CD, image automation, and monitoring so the deployment flow feels close to how a real platform team would run it.
+
+![DevOps Platform architecture](docs/architecture.svg)
+
+## Why I Built This
+
+I built this project to show the kind of platform work that usually sits between application teams and cloud infrastructure: repeatable environments, traceable releases, Git-driven deployments, and enough observability to understand what is running after it ships.
+
+The goal was not to create another isolated Kubernetes example. I wanted a portfolio project that connects the full delivery path: Terraform creates the AWS foundation, GitHub Actions produces versioned images, Helm describes the workloads, and Argo CD keeps the cluster aligned with Git.
 
 ## What This Platform Does
 
