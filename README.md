@@ -1,11 +1,5 @@
 # DevOps Platform
 
-[![CI Pipeline](https://github.com/maheshsaini1997/DevOps-Platform/actions/workflows/ci.yaml/badge.svg)](https://github.com/maheshsaini1997/DevOps-Platform/actions/workflows/ci.yaml)
-[![Terraform Pipeline](https://github.com/maheshsaini1997/DevOps-Platform/actions/workflows/terraform.yaml/badge.svg)](https://github.com/maheshsaini1997/DevOps-Platform/actions/workflows/terraform.yaml)
-![Terraform](https://img.shields.io/badge/Terraform-1.x-7B42BC?logo=terraform&logoColor=white)
-![AWS](https://img.shields.io/badge/AWS-EKS%20%2B%20ECR-FF9900?logo=amazonaws&logoColor=white)
-![GitOps](https://img.shields.io/badge/GitOps-Argo%20CD-EF7B4D?logo=argo&logoColor=white)
-![License](https://img.shields.io/badge/License-TBD-lightgrey)
 
 This repository is a hands-on DevOps platform built around a simple but realistic goal: take application code, build it into containers, publish those containers to AWS, and let GitOps deploy the right version into Kubernetes.
 
